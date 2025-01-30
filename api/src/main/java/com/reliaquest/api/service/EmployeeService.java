@@ -1,5 +1,7 @@
 package com.reliaquest.api.service;
 
+import static com.reliaquest.api.aop.LoggingAspect.logger;
+
 import com.reliaquest.api.Exception.*;
 import com.reliaquest.api.dto.*;
 import com.reliaquest.api.mapper.EmployeeMapper;
@@ -8,7 +10,6 @@ import com.reliaquest.api.model.EmployeeResponse;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpMethod;
 import org.springframework.retry.annotation.Backoff;
@@ -18,8 +19,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
-
-import static com.reliaquest.api.aop.LoggingAspect.logger;
 
 @Service
 @Slf4j
@@ -66,18 +65,17 @@ public class EmployeeService {
             maxAttempts = 3,
             backoff = @Backoff(delay = 1000, multiplier = 2))
     public EmployeeDto getEmployeeById(String id) {
-            EmployeeDto employeeDto = webClient
-                    .get()
-                    .uri(baseUrl + "/" + id)
-                    .retrieve()
-                    .onStatus(
-                            status -> status.is4xxClientError(),
-                            clientResponse ->
-                                    Mono.error(new EmployeeNotFoundException("Employee not found with id: " + id)))
-                    .bodyToMono(EmployeeDto.class)
-                    .block();
-            return employeeDto;
-
+        EmployeeDto employeeDto = webClient
+                .get()
+                .uri(baseUrl + "/" + id)
+                .retrieve()
+                .onStatus(
+                        status -> status.is4xxClientError(),
+                        clientResponse ->
+                                Mono.error(new EmployeeNotFoundException("Employee not found with id: " + id)))
+                .bodyToMono(EmployeeDto.class)
+                .block();
+        return employeeDto;
     }
 
     @Recover
