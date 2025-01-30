@@ -3,8 +3,6 @@ package com.reliaquest.api.controller;
 import com.reliaquest.api.dto.CreateEmployeeDto;
 import com.reliaquest.api.dto.EmployeeDto;
 import com.reliaquest.api.service.EmployeeService;
-import io.github.resilience4j.ratelimiter.RequestNotPermitted;
-import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -43,16 +41,9 @@ public class EmployeeController implements IEmployeeController<EmployeeDto, Crea
     }
 
     @GetMapping("/top-10-earning")
-    @RateLimiter(name = "employeeService", fallbackMethod = "getTop10HighestEarningEmployeeNamesFallback")
     public ResponseEntity<List<String>> getTopTenHighestEarningEmployeeNames() {
         List<String> topEmployees = employeeService.getTop10HighestEarningEmployeeNames();
         return ResponseEntity.ok(topEmployees);
-    }
-
-    public ResponseEntity<List<String>> getTop10HighestEarningEmployeeNamesFallback(RequestNotPermitted ex) {
-        return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
-                .body(List.of(
-                        "Rate limit exceeded for getting top10HighestEarningEmployeeNames. Please try again later."));
     }
 
     @PostMapping
