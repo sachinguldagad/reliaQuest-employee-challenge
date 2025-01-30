@@ -1,0 +1,34 @@
+plugins {
+    id 'project-conventions'
+}
+
+dependencies {
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.1'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.1'
+    testImplementation 'org.mockito:mockito-core:3.6.28'
+    testImplementation 'org.mockito:mockito-junit-jupiter:3.6.28'
+    implementation 'jakarta.validation:jakarta.validation-api:3.0.2'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    implementation "io.github.resilience4j:resilience4j-spring-boot2:1.7.0"
+    implementation 'org.mapstruct:mapstruct:1.5.5.Final'
+    implementation 'org.springframework.boot:spring-boot-starter-aop'
+    annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
+    implementation 'org.springframework.retry:spring-retry'
+    implementation 'io.springfox:springfox-boot-starter:3.0.0'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    java {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(17)
+        }
+    }
+}
+
+springBoot {
+    mainClass = 'com.reliaquest.api.ApiApplication'
+}
+
+test {
+    useJUnitPlatform() // This is essential to run JUnit 5 tests, including ParameterizedTest
+}
